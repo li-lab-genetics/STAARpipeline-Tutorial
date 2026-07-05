@@ -62,7 +62,7 @@ category <- "all_categories"
 ###########################################################
 
 start_time <- Sys.time()
-results_coding <- Gene_Centric_Coding(chr, gene_name, genofile, obj_nullmodel, category = category,
+AI_results_coding <- Gene_Centric_Coding(chr, gene_name, genofile, obj_nullmodel, category = category,
                                       rare_maf_cutoff=0.01,rv_num_cutoff=2,
                                       QC_label = QC_label, variant_type = variant_type,
                                       use_ancestry_informed=TRUE,find_weight=TRUE,
@@ -73,7 +73,7 @@ results_coding <- Gene_Centric_Coding(chr, gene_name, genofile, obj_nullmodel, c
 end_time <- Sys.time()
 end_time - start_time
 
-save(results_coding,file=paste0(output_path, output_file_name, "_", chr, "_", gene_name, "_", category,".Rdata"))
+save(AI_results_coding,file=paste0(output_path, output_file_name, "_", chr, "_", gene_name, "_", category,".Rdata"))
 
 seqClose(genofile)
 

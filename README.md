@@ -184,7 +184,6 @@ Functionally annotate rare variants of each of the input genetic regions.
 #### Input: aGDS files and noncoding masks (chr, start position, and end position).
 #### Output: For each input genetic region, the script outputs a Rdata file containing the rare variants and the corresponding functional annotations.
 
-### An example of batch job submission scripts for these analyses can be found <a href="/batch jobs">**here**</a>.
 
 ## Ancestry-Informed Association analysis using STAARpipeline
 ### Step 2: Ancestry-Informed Individual (single-variant) analysis
@@ -215,3 +214,5 @@ Perform ancestry-informed sliding window analysis using the STAARpipeline packag
 #### Input: aGDS files, the ancestry-informed STAAR null model, and sliding window identifiers. For more details, please see the R script.
 #### Output: Rdata files with the user-defined names.
 The number of output files is the total number of chromosomes corresponding to the user provided sliding window ranges. 
+
+### An example of batch job submission scripts for these analyses can be found <a href="/batch jobs">**here**</a>.

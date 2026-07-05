@@ -50,7 +50,8 @@ output_file_name <- "TOPMed_F8_Sliding_Window_AI_STAAR"
 ## input chromosome from batch file
 chr <- as.numeric(commandArgs(TRUE)[1])
 
-results_sliding_window_genome <- get(load("/path_to_the_file/results_sliding_window.Rdata"))
+#sliding window dataset - with columns for "Chr", "Start Loc", "End Loc"
+sliding_window_results <- get(load("/path_to_the_file/sliding_window_results.Rdata"))
 #or, use alternative functions to read data in other formats
 
 ###########################################################
@@ -59,16 +60,16 @@ results_sliding_window_genome <- get(load("/path_to_the_file/results_sliding_win
 ## aGDS file
 agds.path <- agds_dir[chr]
 genofile <- seqOpen(agds.path)
-results_sliding_window_genome_chr <- results_sliding_window_genome[unlist(results_sliding_window_genome[,"Chr"]) == chr,]
+sliding_window_results_chr <- sliding_window_results[unlist(sliding_window_results[,"Chr"]) == chr,]
 
-results_sliding_window <- c()
+AI_results_sliding_window <- c()
 
-if(!is.null(nrow(results_sliding_window_genome_chr))){
-  for(i in 1:nrow(results_sliding_window_genome_chr)){
+if(!is.null(nrow(sliding_window_results_chr))){
+  for(i in 1:nrow(sliding_window_results_chr)){
     results <- c()
     
-    start_loc <- unlist(results_sliding_window_genome_chr[,"Start Loc"])
-    end_loc <- unlist(results_sliding_window_genome_chr[,"End Loc"])
+    start_loc <- unlist(sliding_window_results_chr[,"Start Loc"])
+    end_loc <- unlist(sliding_window_results_chr[,"End Loc"])
     start_loc_sub <- start_loc[i]
     end_loc_sub <- end_loc[i]
     
@@ -82,13 +83,13 @@ if(!is.null(nrow(results_sliding_window_genome_chr))){
     
     if(class(results)[1]!="try-error")
     {
-      results_sliding_window <- c(results_sliding_window,results)
+      AI_results_sliding_window <- c(AI_results_sliding_window,results)
     }
   }
 }else{
-  start_loc <- unlist(results_sliding_window_genome_chr["Start Loc"])
-  end_loc <- unlist(results_sliding_window_genome_chr["End Loc"])
-  results_sliding_window <- try(Sliding_Window(chr=chr,start_loc=start_loc,end_loc=end_loc,
+  start_loc <- unlist(sliding_window_results_chr["Start Loc"])
+  end_loc <- unlist(sliding_window_results_chr["End Loc"])
+  AI_results_sliding_window <- try(Sliding_Window(chr=chr,start_loc=start_loc,end_loc=end_loc,
                                                sliding_window_length=sliding_window_length,type="multiple",
                                                genofile=genofile,obj_nullmodel=obj_nullmodel,
                                                rare_maf_cutoff=0.01,rv_num_cutoff=2,
@@ -97,6 +98,6 @@ if(!is.null(nrow(results_sliding_window_genome_chr))){
                                                Use_annotation_weights=Use_annotation_weights,Annotation_name=Annotation_name))
 }
 
-save(results_sliding_window,file=paste0(output_path,output_file_name,"_",chr,".Rdata"))
+save(AI_results_sliding_window,file=paste0(output_path,output_file_name,"_",chr,".Rdata"))
 
 seqClose(genofile)

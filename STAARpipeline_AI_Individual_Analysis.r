@@ -38,7 +38,7 @@ output_file_name <- "TOPMed_F8_Individual_Analysis_AI_GWA"
 arrayid <- as.numeric(commandArgs(TRUE)[1])
 
 #individual analysis results
-individual_results <- get(load("/path_to_the_file/results_individual_analysis.Rdata"))
+individual_results <- get(load("/path_to_the_file/individual_results.Rdata"))
 #or, use alternative functions to read data in other formats
 
 ###########################################################
@@ -63,7 +63,7 @@ end_loc <- start_loc + (10e6) - 1
 end_loc <- min(end_loc,jobs_num$end_loc[chr])
 
 start_time <- Sys.time()
-results_individual_analysis <- Individual_Analysis(chr=chr, individual_results = individual_results, 
+AI_results_individual_analysis <- Individual_Analysis(chr=chr, individual_results = individual_results, 
                                                    start_loc=start_loc,end_loc=end_loc,
                                                    genofile=genofile,obj_nullmodel=obj_nullmodel,
                                                    QC_label=QC_label,variant_type=variant_type,
@@ -74,6 +74,6 @@ results_individual_analysis <- Individual_Analysis(chr=chr, individual_results =
 end_time <- Sys.time()
 end_time - start_time
 
-save(results_individual_analysis,file=paste0(output_path,output_file_name,"_",chr,"_",groupid,".Rdata"))
+save(AI_results_individual_analysis,file=paste0(output_path,output_file_name,"_",chr,"_",groupid,".Rdata"))
 
 seqClose(genofile)

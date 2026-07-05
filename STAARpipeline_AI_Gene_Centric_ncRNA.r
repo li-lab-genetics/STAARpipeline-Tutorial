@@ -47,14 +47,14 @@ output_path <- "/path_to_the_output_file/"
 output_file_name <- "TOPMed_F8_ncRNA_AI_STAAR"
 
 #ncRNA dataset - with columns for "Gene name", "Chr"
-ncRNA_results <- get(load("/path_to_the_file/results_ncRNA.Rdata"))
+ncRNA_results <- get(load("/path_to_the_file/ncRNA_results.Rdata"))
 #or, use alternative functions to read data in other formats
 
 ###########################################################
 #           Main Function 
 ###########################################################
 
-results_ncRNA <- c()
+AI_results_ncRNA <- c()
 
 if(!is.null(nrow(ncRNA_results))){ #multiple ncRNAs
   gene_name <- as.character(unlist(ncRNA_results[,"Gene name"]))
@@ -75,10 +75,10 @@ if(!is.null(nrow(ncRNA_results))){ #multiple ncRNAs
                          Use_annotation_weights=Use_annotation_weights,Annotation_name=Annotation_name,
                          use_ancestry_informed=TRUE,find_weight=TRUE))
     seqClose(genofile)
-    results_ncRNA <- c(results_ncRNA,results)
+    AI_results_ncRNA <- c(AI_results_ncRNA,results)
   }
 }else if(is.null(length(ncRNA_results))){
-  results_ncRNA <- c()
+  AI_results_ncRNA <- c()
 }else{
   gene_name <- as.character(unlist(ncRNA_results["Gene name"]))
   chr <- as.integer(unlist(ncRNA_results["Chr"]))
@@ -86,7 +86,7 @@ if(!is.null(nrow(ncRNA_results))){ #multiple ncRNAs
   agds.path <- agds_dir[chr]
   genofile <- seqOpen(agds.path)
   
-  results_ncRNA <- try(ncRNA(chr=chr,gene_name=gene_name,genofile=genofile,obj_nullmodel=obj_nullmodel,
+  AI_results_ncRNA <- try(ncRNA(chr=chr,gene_name=gene_name,genofile=genofile,obj_nullmodel=obj_nullmodel,
                              rare_maf_cutoff=0.01,rv_num_cutoff=2,
                              QC_label=QC_label,variant_type=variant_type,geno_missing_imputation=geno_missing_imputation,
                              Annotation_dir=Annotation_dir,Annotation_name_catalog=Annotation_name_catalog,
@@ -95,4 +95,4 @@ if(!is.null(nrow(ncRNA_results))){ #multiple ncRNAs
   
 }
 
-save(results_ncRNA,file=paste0(output_path,output_file_name,".Rdata"))
+save(AI_results_ncRNA,file=paste0(output_path,output_file_name,".Rdata"))
