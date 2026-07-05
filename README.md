@@ -65,12 +65,13 @@ R package **FastSparseGRM** provides functions and a pipeline to efficiently cal
 * `jobs_num.Rdata`: a data frame containing the number of jobs for association analysis, including individual analysis, sliding window analysis and dynamic window analysis (SCANG-STAAR).
 
 ### Step 1: Fit STAAR or MultiSTAAR null model
-#### Script: <a href="STAARpipeline_Null_Model.r">**STAARpipeline_Null_Model.r**</a> or <a href="STAARpipeline_Null_Model_GENESIS.r">**STAARpipeline_Null_Model_GENESIS.r**</a> or <a href="STAARpipeline_Null_Model_Multi.r">**STAARpipeline_Null_Model_Multi.r**</a>
+#### Script: <a href="STAARpipeline_Null_Model.r">**STAARpipeline_Null_Model.r**</a> or <a href="STAARpipeline_Null_Model_GENESIS.r">**STAARpipeline_Null_Model_GENESIS.r**</a> or <a href="STAARpipeline_AI_Null_Model.r">**STAARpipeline_AI_Null_Model.r**</a> or <a href="STAARpipeline_Null_Model_Multi.r">**STAARpipeline_Null_Model_Multi.r**</a> 
 * `STAARpipeline_Null_Model.r` fits the STAAR null model using the STAARpipeline package. <br>
 * `STAARpipeline_Null_Model_GENESIS.r` fits the null model using the GENESIS package and convert it to the STAAR null model using the STAARpipeline package. <br>
+* `STAARpipeline_AI_Null_Model.r` fits the ancestry-informed STAAR null model using the STAARpipeline package. <br>
 * `STAARpipeline_Null_Model_Multi.r` fits the MultiSTAAR null model using the STAARpipeline package. <br>
 #### Input: Phenotype data and (sparse) genetic relatedness matrix. For more details, please see the R scripts.
-#### Output: a Rdata file of the STAAR or MultiSTAAR null model.
+#### Output: a Rdata file of the STAAR, ancestry-informed STAAR, or MultiSTAAR null model.
 Note: Once the <a href="https://github.com/xihaoli/STAAR">STAAR</a> or <a href="https://github.com/xihaoli/MultiSTAAR">MultiSTAAR</a> null model is fit, all the remaining steps of STAARpipeline and STAARpipelineSummary share the same scripts (the information of single-trait or multi-trait analysis being considered is automatically retrieved from the null model object).
 
 ### Step 2: Individual (single-variant) analysis
@@ -185,3 +186,32 @@ Functionally annotate rare variants of each of the input genetic regions.
 
 ### An example of batch job submission scripts for these analyses can be found <a href="/batch jobs">**here**</a>.
 
+## Ancestry-Informed Association analysis using STAARpipeline
+### Step 2: Ancestry-Informed Individual (single-variant) analysis
+#### Script: <a href="STAARpipeline_AI_Individual_Analysis.r">**STAARpipeline_AI_Individual_Analysis.r**</a>
+Perform ancestry-informed single-variant analysis for user-selected common and low-frequency variants from the genome using the STAARpipeline package. 
+#### Input: aGDS files, the ancestry-informed STAAR null model, and single variant identifiers. For more details, please see the R script.
+#### Output: Rdata files with the user-defined names.
+The number of output files is the summation of the column "individual_analysis_num" for the object in `jobs_num.Rdata`.
+
+### Step 3.1: Ancestry-Informed Gene-centric coding analysis
+#### Script: <a href="STAARpipeline_AI_Gene_Centric_Coding.r">**STAARpipeline_AI_Gene_Centric_Coding.r**</a>
+Perform ancestry-informed gene-centric analysis for coding rare variants using the STAARpipeline package. The gene-centric coding analysis provides five functional categories to aggregate coding rare variants of each protein-coding gene: (1) putative loss of function (stop gain, stop loss, and splice) RVs, (2) missense RVs, (3) disruptive missense RVs, (4) putative loss of function and disruptive missense RVs, and (5) synonymous RVs. <br>
+* `STAARpipeline_AI_Gene_Centric_Coding.r` performs ancestry-informed gene-centric coding analysis for user-selected protein-coding genes from the genome. <br>
+#### Input: aGDS files, the ancestry-informed STAAR null model, and rare variant identifiers. For more details, please see the R script.
+#### Output: Rdata files with the user-defined names.
+
+### Step 3.2: Ancestry-Informed Gene-centric noncoding analysis
+#### Script: <a href="STAARpipeline_AI_Gene_Centric_Noncoding.r">**STAARpipeline_AI_Gene_Centric_Noncoding.r**</a> and <a href="STAARpipeline_AI_Gene_Centric_ncRNA.r">**STAARpipeline_AI_Gene_Centric_ncRNA.r**</a>
+Perform ancestry-informed gene-centric analysis for noncoding rare variants using the STAARpipeline package. The gene-centric noncoding analysis provides eight functional categories of regulatory regions to aggregate noncoding rare variants: (1) promoter RVs overlaid with CAGE sites, (2) promoter RVs overlaid with DHS sites, (3) enhancer RVs overlaid with CAGE sites, (4) enhancer RVs overlaid with DHS sites, (5) untranslated region (UTR) RVs, (6) upstream region RVs, (7) downstream region RVs, and (8) noncoding RNA (ncRNA) RVs. <br>
+* `STAARpipeline_AI_Gene_Centric_Noncoding.r` performs gene-centric noncoding analysis for user-selected protein-coding genes from the genome. <br>
+* `STAARpipeline_AI_Gene_Centric_ncRNA.r` performs gene-centric noncoding analysis for user-selected ncRNA genes from the genome. <br> 
+#### Input: aGDS files, the ancestry-informed STAAR null model, and rare variant identifiers. For more details, please see the R scripts.
+#### Output: Rdata files with the user-defined names for protein-coding genes and ncRNA genes.
+
+### Step 4: Ancestry-Informed Sliding window analysis
+#### Script: <a href="STAARpipeline_AI_Sliding_Window.r">**STAARpipeline_AI_Sliding_Window.r**</a>
+Perform ancestry-informed sliding window analysis using the STAARpipeline package, for user-selected ranges.
+#### Input: aGDS files, the ancestry-informed STAAR null model, and sliding window identifiers. For more details, please see the R script.
+#### Output: Rdata files with the user-defined names.
+The number of output files is the total number of chromosomes corresponding to the user provided sliding window ranges. 
