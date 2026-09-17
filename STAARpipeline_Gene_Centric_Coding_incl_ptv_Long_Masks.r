@@ -1,10 +1,9 @@
-#####################################################################
-# Gene-centric analysis for noncoding rare variants in long masks 
-# of protein-coding genes using STAARpipeline
+##################################################################################
+# Gene-centric analysis for coding rare variants in long masks using STAARpipeline
 # Xihao Li, Zilin Li
 # Initiate date: 11/04/2021
 # Current date: 02/17/2024
-#####################################################################
+##################################################################################
 rm(list=ls())
 gc()
 
@@ -26,7 +25,7 @@ obj_nullmodel <- get(load("/path_to_the_file/obj_nullmodel.Rdata"))
 ## QC_label
 QC_label <- "annotation/filter"
 ## variant_type
-variant_type <- "SNV"
+variant_type <- "variant"
 ## geno_missing_imputation
 geno_missing_imputation <- "mean"
 
@@ -37,15 +36,14 @@ Annotation_name_catalog <- get(load("/path_to_the_file/Annotation_name_catalog.R
 # Or equivalently
 # Annotation_name_catalog <- read.csv("/path_to_the_file/Annotation_name_catalog.csv")
 ## Use_annotation_weights
-Use_annotation_weights <- TRUE
+Use_annotation_weights <- FALSE
 ## Annotation name
-Annotation_name <- c("CADD","LINSIGHT","FATHMM.XF","aPC.EpigeneticActive","aPC.EpigeneticRepressed","aPC.EpigeneticTranscription",
-                     "aPC.Conservation","aPC.LocalDiversity","aPC.Mappability","aPC.TF","aPC.Protein")
+annotation_name <- NULL
 
 ## output path
 output_path <- "/path_to_the_output_file/"
 ## output file name
-output_file_name <- "TOPMed_F5_LDL_Noncoding"
+output_file_name <- "TOPMed_F5_LDL_Coding_incl_ptv"
 ## input array id from batch file
 arrayid_longmask <- as.numeric(commandArgs(TRUE)[1])
 
@@ -57,14 +55,16 @@ gene_num_in_array <- 50
 group.num.allchr <- ceiling(table(genes_info[,2])/gene_num_in_array)
 sum(group.num.allchr)
 
-## analyze large noncoding masks
-arrayid <- c(21,39,44,45,46,53,55,83,88,103,114,127,135,150,154,155,163,164,166,180,189,195,200,233,280,285,295,313,318,304,327,363,44,45,54)
-sub_seq_id <- c(1009,1929,182,214,270,626,741,894,83,51,611,385,771,493,671,702,238,297,388,352,13,303,600,170,554,207,724,755,1048,319,44,411,195,236,677)
+## analyze large coding masks
+arrayid <- c(57,112,112,113,113,113,113,113,113,113)
+sub_seq_id <- c(840,543,544,575,576,577,578,579,580,582)
 
 region_spec <- data.frame(arrayid,sub_seq_id) 
 sub_seq_id <- ((arrayid_longmask-1)*5+1):min(arrayid_longmask*5,length(arrayid))
 
-results_noncoding <- c()
+genes <- genes_info
+
+results_coding <- c()
 for(kk in sub_seq_id)
 {
   print(kk)
@@ -79,15 +79,15 @@ for(kk in sub_seq_id)
   
   genes_info_chr <- genes_info[genes_info[,2]==chr,]
   gene_name <- genes_info_chr[sub_id,1]
-  results <- Gene_Centric_Noncoding(chr=chr,gene_name=gene_name,genofile=genofile,obj_nullmodel=obj_nullmodel,
-                                    rare_maf_cutoff=0.01,rv_num_cutoff=2,
-                                    QC_label=QC_label,variant_type=variant_type,geno_missing_imputation=geno_missing_imputation,
-                                    Annotation_dir=Annotation_dir,Annotation_name_catalog=Annotation_name_catalog,
-                                    Use_annotation_weights=Use_annotation_weights,Annotation_name=Annotation_name)
-  results_noncoding <- append(results_noncoding,results)
+  results <- Gene_Centric_Coding(chr=chr,gene_name=gene_name,category="all_categories_incl_ptv",genofile=genofile,obj_nullmodel=obj_nullmodel,
+                                 rare_maf_cutoff=0.01,rv_num_cutoff=2,
+                                 QC_label=QC_label,variant_type=variant_type,geno_missing_imputation=geno_missing_imputation,
+                                 Annotation_dir=Annotation_dir,Annotation_name_catalog=Annotation_name_catalog,
+                                 Use_annotation_weights=Use_annotation_weights,Annotation_name=annotation_name)
+  results_coding <- append(results_coding,results)
   
   seqClose(genofile)
 }
 
-save(results_noncoding,file=paste0(output_path,output_file_name,"_",arrayid_longmask+379,".Rdata"))
+save(results_coding,file=paste0(output_path,output_file_name,"_",arrayid_longmask+379,".Rdata"))
 

@@ -30,7 +30,7 @@ obj_nullmodel <- get(load("/path_to_the_file/obj_nullmodel.Rdata"))
 input_path <- "/path_to_the_results_file/"
 output_path <- input_path
 ## number of jobs
-gene_centric_noncoding_jobs_num <- 387
+gene_centric_noncoding_jobs_num <- 386
 ## results name
 gene_centric_results_name <- "TOPMed_F5_LDL_Noncoding"
 
